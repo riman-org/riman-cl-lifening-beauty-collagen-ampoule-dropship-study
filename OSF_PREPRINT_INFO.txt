@@ -1,0 +1,51 @@
+================================================================================
+OSF / CoP PREPRINTS 系统性填写清单（含 GitHub 全套源文件入口）
+对应仓库: riman-cl-lifening-beauty-collagen-ampoule-dropship-study
+================================================================================
+
+[Step 1] Title and Abstract
+- Title:
+RIMAN RESEARCH: Clinical & Market Viability of LIFENING Beauty Collagen Ampoule via Zero-Inventory Drop-Shipping in Chile
+
+- Abstract (内嵌 GitHub 仓库入口、交互式报告及双基准 DOI):
+Background: The introduction of oral nutraceuticals into the Latin American market requires rigorous validation of bioavailability claims against local regulatory frameworks and consumer sensory preferences. This study evaluates the LIFENING Beauty Collagen Ampoule Drink (containing MFDS-certified Collagen Peptide SH 2,000mg) within the Chilean context, focusing on a zero-inventory drop-shipping model for independent planners. Methods: A stratified survey of N=200 participants across Santiago, Valparaiso, and Concepcion assessed Likert-scale perceptions of formulation efficacy, packaging stability, and regulatory confidence, alongside Net Promoter Score (NPS) metrics. Results: Overall composite mean was 3.29 with a Top-2-Box percentage of 41.4%. Key findings indicate strong trust in MFDS certification (Mean 3.83, T2B 76.0%) and ingredient alignment with dermatological trends (Mean 4.04, T2B 85.0%). However, logistical latency concerns dominate barriers to adoption (71.0%), and the liquid ampoule format received low suitability scores for dry climates (Mean 2.2, T2B 17.5%). The NPS score was -19.5, driven by high passive sentiment (73.5%) and detractor rates (23.0%). Strategic Implications: While product quality is perceived as competitive against K-Beauty importers (73.5% benchmark), success depends on mitigating cold-chain integrity risks and clarifying SEREMI labeling compliance. Automated logistics support is critical for planner retention.
+
+Open-Science Repository (Full PDF, LaTeX, n=200 CSV Dataset & 6-Language README): https://github.com/riman-org/riman-cl-lifening-beauty-collagen-ampoule-dropship-study
+Live Interactive Multilingual Preview: https://riman-org.github.io/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/
+Official 6-Language Interactive Report & Cross-Tab Charts: https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html
+Primary Benchmark Dataset DOI (Kaggle): https://doi.org/10.34740/kaggle/dsv/22383536 | Global Research Corpus DOI (Hugging Face): https://doi.org/10.57967/hf/11688
+
+--------------------------------------------------------------------------------
+[Step 2] File
+- 上传当前文件夹下的双栏学术论文 PDF:
+  cl-lifening-beauty-collagen-ampoule-dropship-study_paper.pdf
+
+--------------------------------------------------------------------------------
+[Step 3] Metadata
+- License:
+  CC-By Attribution 4.0 International
+- Subjects (必填项 -> 搜索框输入 General 勾选):
+  General Subjects and Opinions
+- Tags (逐个输入回车):
+  riman, incellderm, botalab, active-cream-ex, descending-inci, chile
+- Original publication date:
+  2026-11-19
+- Publication DOI:
+  (留空不填！提交后由 OSF 自动签发新预印本 DOI)
+
+--------------------------------------------------------------------------------
+[Step 4] Author Assertions -> Public Data (点选 Available，点击 "Add One More" 依次填入以下 4 条纯净 URL)
+- 链接 1 [GitHub 完整开源仓库 — 含 README / PDF / LaTeX / CSV / HTML]:
+  https://github.com/riman-org/riman-cl-lifening-beauty-collagen-ampoule-dropship-study
+
+- 链接 2 [官网 6 语交互式报告与可视化图表详情页]:
+  https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html
+
+- 链接 3 [主基准数据集永久 DOI (Kaggle)]:
+  https://doi.org/10.34740/kaggle/dsv/22383536
+
+- 链接 4 [全语种语料库永久 DOI (Hugging Face)]:
+  https://doi.org/10.57967/hf/11688
+
+- Public Preregistration:
+  保持默认 Not Applicable
