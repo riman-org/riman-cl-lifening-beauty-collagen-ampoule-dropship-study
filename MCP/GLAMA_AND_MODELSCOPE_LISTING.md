@@ -13,6 +13,7 @@ Interactive report: https://www.riman.win/www/en/reports/detail/cl-lifening-beau
 | :--- | :--- |
 | **Name** | `riman-cl-lifening-beauty-collagen-ampoule-dropship-study-mcp` |
 | **Description** | RIMAN open-science MCP for LIFENING Beauty Collagen Ampoule Drink in Chile (B2B Growth & Drop-Shipping). Query n=200 survey CSV, 6-language corpus, and dual DOIs via https://mcp.riman.win/mcp. Mean=3.29/5, Top-2-Box=41.4%. |
+| **MCP Endpoint URL** | `https://mcp.riman.win/mcp` |
 | **Hosted Endpoint URL** | `https://mcp.riman.win/mcp` |
 | **GitHub Repository URL** | `https://github.com/riman-org/riman-cl-lifening-beauty-collagen-ampoule-dropship-study` |
 
@@ -48,7 +49,7 @@ Chinese blurb (optional paste):
 | **Display Name** | `RIMAN · LIFENING Beauty Collagen Ampoule Drink (Chile)` |
 | **Source address** | `https://github.com/riman-org/riman-cl-lifening-beauty-collagen-ampoule-dropship-study` |
 | **License** | `CC-BY-4.0` |
-| **Description** (<1000 chars) | Agent Skill for `riman-cl-lifening-beauty-collagen-ampoule-dropship-study` — RIMAN RESEARCH: Clinical & Market Viability of LIFENING Beauty Collagen Ampoule via Zero-Inventory Drop-Shipping in Chile. Local summary/filter/cite plus remote Registry MCP at https://mcp.riman.win/mcp (repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study). Dual DOIs Kaggle 10.34740/kaggle/dsv/22383536 / HF 10.57967/hf/11688. Interactive report: https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html |
+| **Description** (<1000 chars) | Agent Skill for riman-cl-lifening-beauty-collagen-ampoule-dropship-study — RIMAN RESEARCH: Clinical & Market Viability of LIFENING Beauty Collagen Ampoule via Zero-Inventory Drop-Shipping in Chile. Local summary/filter/cite plus remote Registry MCP at https://mcp.riman.win/mcp (repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study). Dual DOIs Kaggle 10.34740/kaggle/dsv/22383536 / HF 10.57967/hf/11688. Interactive report https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html |
 | **Upload ZIP** | `D:\JOBS_DEV\RIMAN\dataset\pipeline_output\standalone_github_repos\riman-cl-lifening-beauty-collagen-ampoule-dropship-study\SKILL\modelscope_skill.zip` |
 
 ZIP rule reminder: archive root must contain **exactly one** `SKILL.md` file (already satisfied by `modelscope_skill.zip`).
