@@ -1,12 +1,14 @@
 {
   "mcpServers": {
     "riman-cl-lifening-beauty-collagen-ampoule-dropship-study": {
-      "url": "https://riman-ingestor.rimanwin.workers.dev/mcp",
+      "url": "https://mcp.riman.win/mcp",
       "transport": "http",
       "headers": {},
       "repo_name": "riman-cl-lifening-beauty-collagen-ampoule-dropship-study",
-      "r2_prefix": "repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/",
-      "notes": "Cloudflare Worker MCP over RIMAN_R2 (transcend-riman). Override url after deploy."
+      "proxy_bridge": "npx -y mcp-proxy https://mcp.riman.win/mcp",
+      "repos_index": "https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study",
+      "cdn_prefix": "https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/",
+      "notes": "Official RIMAN Registry MCP. Always use https://mcp.riman.win/mcp. Pass repo_name on tool calls."
     }
   }
 }

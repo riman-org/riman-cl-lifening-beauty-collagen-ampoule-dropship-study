@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Local CLI for this RIMAN open-science repository (summary | filter)."""
+"""Local CLI aligned with RIMAN Registry MCP tools (summary|filter|compare|cite)."""
 
 from __future__ import annotations
 
@@ -11,65 +11,89 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+KAGGLE_DOI = "10.34740/kaggle/dsv/22383536"
+HF_DOI = "10.57967/hf/11688"
+SITE = "https://www.riman.win"
+MCP = "https://mcp.riman.win/mcp"
 
 
-def _find_one(pattern: str) -> Path | None:
-    hits = sorted(REPO_ROOT.glob(pattern))
+def _find_one(root: Path, pattern: str) -> Path | None:
+    hits = sorted(root.glob(pattern))
     return hits[0] if hits else None
 
 
-def cmd_summary(_: argparse.Namespace) -> int:
-    report = _find_one("*_report.json")
-    if not report:
-        print(f"[error] no *_report.json under {REPO_ROOT}", file=sys.stderr)
-        return 1
-    doc = json.loads(report.read_text(encoding="utf-8"))
+def _load_report(root: Path | None = None) -> dict:
+    root = root or REPO_ROOT
+    path = _find_one(root, "*_report.json")
+    if not path:
+        raise FileNotFoundError(f"no *_report.json under {root}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _overview(doc: dict, root: Path) -> dict:
     slug = doc.get("slug")
-    theme_id = doc.get("theme_id")
+    theme_id = doc.get("theme_id") or "ontology"
     meta = doc.get("metadata") or {}
     stats = doc.get("quantitative_metrics") or {}
     en = (doc.get("locales") or {}).get("en") or {}
-    print(f"repo_root: {REPO_ROOT}")
-    print(f"slug: {slug}")
-    print(f"theme_id: {theme_id}")
-    print(f"title: {en.get('title')}")
-    print(f"country: {meta.get('country_name')} ({meta.get('country_code')})")
-    print(f"product: {meta.get('brand_line')} / {meta.get('product_name')} ({meta.get('product_id')})")
-    print(f"sample_size: {stats.get('sample_size')}")
-    print(f"overall_mean: {stats.get('overall_composite_mean')}")
-    print(f"top2_box_pct: {stats.get('overall_top2_box_pct')}")
-    print(f"detail: https://www.riman.win/www/en/reports/detail/{slug}.html")
-    print(f"hub: https://www.riman.win/www/en/reports/hub/{theme_id}.html")
-    print(f"kaggle_doi: 10.34740/kaggle/dsv/22383536")
-    print(f"hf_doi: 10.57967/hf/11688")
+    repo_name = f"riman-{slug}"
+    return {
+        "repo_name": repo_name,
+        "repo_root": str(root),
+        "slug": slug,
+        "theme_id": theme_id,
+        "title_en": en.get("title"),
+        "abstract_en": (en.get("abstract") or "")[:1200],
+        "country": meta.get("country_name"),
+        "country_code": meta.get("country_code"),
+        "product_id": meta.get("product_id"),
+        "product_name": meta.get("product_name"),
+        "sample_size": stats.get("sample_size"),
+        "overall_mean": stats.get("overall_composite_mean"),
+        "top2_box_pct": stats.get("overall_top2_box_pct"),
+        "portal_detail": f"{SITE}/www/en/reports/detail/{slug}.html",
+        "portal_hub": f"{SITE}/www/en/reports/hub/{theme_id}.html",
+        "mcp": MCP,
+        "dois": {"kaggle": KAGGLE_DOI, "huggingface": HF_DOI},
+    }
+
+
+def cmd_summary(_: argparse.Namespace) -> int:
+    ov = _overview(_load_report(), REPO_ROOT)
+    print(json.dumps(ov, ensure_ascii=False, indent=2))
     return 0
 
 
 def cmd_filter(args: argparse.Namespace) -> int:
     column = (args.column or "").strip()
     contains = (args.contains or "").strip().lower()
+    lang = (args.lang or "").strip()
     limit = max(1, int(args.limit or 20))
     shown = 0
 
-    csv_path = _find_one("*_quantitative.csv")
-    if csv_path and column:
+    csv_path = _find_one(REPO_ROOT, "*_quantitative.csv")
+    if csv_path:
         with csv_path.open("r", encoding="utf-8-sig", newline="") as f:
             reader = csv.DictReader(f)
-            if column not in (reader.fieldnames or []):
-                print(f"[warn] column '{column}' not in CSV; available={reader.fieldnames}", file=sys.stderr)
+            fields = reader.fieldnames or []
+            if column and column not in fields:
+                print(f"[warn] column '{column}' not in CSV; available={fields}", file=sys.stderr)
             else:
                 print(f"## CSV hits from {csv_path.name}")
                 for row in reader:
-                    val = str(row.get(column, ""))
-                    if contains and contains not in val.lower():
+                    if column:
+                        cell = str(row.get(column, ""))
+                        if contains and contains not in cell.lower():
+                            continue
+                    elif contains and contains not in json.dumps(row, ensure_ascii=False).lower():
                         continue
                     print(json.dumps(row, ensure_ascii=False))
                     shown += 1
                     if shown >= limit:
                         break
 
-    jsonl = _find_one("*_multilingual_corpus.jsonl")
-    if jsonl and (contains or not column):
+    jsonl = _find_one(REPO_ROOT, "*_multilingual_corpus.jsonl")
+    if jsonl:
         print(f"## JSONL hits from {jsonl.name}")
         n = 0
         for line in jsonl.read_text(encoding="utf-8").splitlines():
@@ -77,12 +101,14 @@ def cmd_filter(args: argparse.Namespace) -> int:
                 continue
             if contains and contains not in line.lower():
                 continue
-            if column and column not in line:
-                # soft filter: require column token somewhere in the line
-                if contains:
-                    pass
-                else:
-                    continue
+            if lang:
+                try:
+                    obj = json.loads(line)
+                    if str(obj.get("language") or "") != lang:
+                        continue
+                except json.JSONDecodeError:
+                    if lang not in line:
+                        continue
             print(line[:2000])
             n += 1
             if n >= limit:
@@ -94,16 +120,78 @@ def cmd_filter(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_compare(args: argparse.Namespace) -> int:
+    other_name = (args.other or "").strip()
+    if not other_name:
+        print("[error] --other required (sibling folder name riman-...)", file=sys.stderr)
+        return 2
+    other_root = REPO_ROOT.parent / other_name
+    if not other_root.is_dir():
+        print(f"[error] sibling not found: {other_root}", file=sys.stderr)
+        return 1
+    a = _overview(_load_report(REPO_ROOT), REPO_ROOT)
+    b = _overview(_load_report(other_root), other_root)
+    payload = {
+        "left": a,
+        "right": b,
+        "delta": {
+            "overall_mean": _num(a.get("overall_mean")) - _num(b.get("overall_mean")),
+            "top2_box_pct": _num(a.get("top2_box_pct")) - _num(b.get("top2_box_pct")),
+            "sample_size": _num(a.get("sample_size")) - _num(b.get("sample_size")),
+        },
+        "mcp": MCP,
+    }
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    return 0
+
+
+def _num(v) -> float:
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def cmd_cite(_: argparse.Namespace) -> int:
+    doc = _load_report()
+    slug = doc.get("slug") or "study"
+    en = (doc.get("locales") or {}).get("en") or {}
+    title = en.get("title") or slug
+    bib_key = str(slug).replace("-", "_")
+    detail = f"{SITE}/www/en/reports/detail/{slug}.html"
+    bib = f"""@article{{riman_{bib_key}_2026,
+  author    = {{RIMAN Global Formulation \\& Market Intelligence Division}},
+  title     = {{{title}}},
+  year      = {{2026}},
+  publisher = {{RIMAN Research}},
+  doi       = {{{KAGGLE_DOI}}},
+  url       = {{{detail}}}
+}}"""
+    print(json.dumps({
+        "bibtex": bib,
+        "dois": {"kaggle": KAGGLE_DOI, "huggingface": HF_DOI},
+        "portal": detail,
+        "mcp": MCP,
+    }, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Query local RIMAN package files")
+    parser = argparse.ArgumentParser(description="Query local RIMAN package (MCP-aligned)")
     sub = parser.add_subparsers(dest="cmd", required=True)
-    p_sum = sub.add_parser("summary", help="Print report.json summary + portal links")
-    p_sum.set_defaults(func=cmd_summary)
-    p_f = sub.add_parser("filter", help="Filter quantitative CSV / multilingual JSONL")
-    p_f.add_argument("--column", default="", help="CSV column name")
-    p_f.add_argument("--contains", default="", help="Case-insensitive substring")
-    p_f.add_argument("--limit", type=int, default=20)
-    p_f.set_defaults(func=cmd_filter)
+    p = sub.add_parser("summary", help="Structured overview + dual DOIs")
+    p.set_defaults(func=cmd_summary)
+    p = sub.add_parser("filter", help="Filter CSV / multilingual JSONL")
+    p.add_argument("--column", default="")
+    p.add_argument("--contains", default="")
+    p.add_argument("--lang", default="", help="JSONL language filter (en, zh-TW, ...)")
+    p.add_argument("--limit", type=int, default=20)
+    p.set_defaults(func=cmd_filter)
+    p = sub.add_parser("compare", help="Compare metrics with sibling riman-* repo")
+    p.add_argument("--other", required=True)
+    p.set_defaults(func=cmd_compare)
+    p = sub.add_parser("cite", help="BibTeX + dual benchmark DOIs")
+    p.set_defaults(func=cmd_cite)
     args = parser.parse_args()
     return int(args.func(args) or 0)
 

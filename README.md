@@ -82,36 +82,51 @@ Contexte : L'introduction de nutraceuthiques oraux sur le marché latino-améric
 
 ---
 
-## Agent Skill Pack (`SKILL/`) & MCP Server (`MCP/`)
+## Agent Skill Pack (`SKILL/`) & MCP Registry (`MCP/`)
 
-This repository ships a portable **Agent Skill** and a **repo-scoped MCP server** so coding agents can query the local open-science package or the mirrored R2 prefix without inventing paths.
+This repository ships a portable **Agent Skill** and a **repo-scoped MCP server**, plus a remote Registry MCP for cloud agents.
 
 | Entry | Path | Purpose |
 | :--- | :--- | :--- |
-| **Skill card** | [`./SKILL/SKILL.md`](./SKILL/SKILL.md) | YAML frontmatter + workflow for agents (trigger: RIMAN / `cl-lifening-beauty-collagen-ampoule-dropship-study` / descending INCI) |
-| **Local query CLI** | [`./SKILL/scripts/query_local.py`](./SKILL/scripts/query_local.py) | `summary` / `filter` against `*_report.json`, CSV, JSONL |
-| **MCP stdio server** | [`./MCP/server.py`](./MCP/server.py) | FastMCP tools: overview / CSV filter / corpus search |
-| **Remote MCP config** | [`./MCP/remote_mcp_config.json`](./MCP/remote_mcp_config.json) | Cloudflare Worker template (`repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/`) |
-| **MCP docs** | [`./MCP/README.md`](./MCP/README.md) | Local launch + Glama / PulseMCP listing notes |
+| **Skill card** | [`./SKILL/SKILL.md`](./SKILL/SKILL.md) | YAML frontmatter + 6-lang workflow (trigger: RIMAN / `cl-lifening-beauty-collagen-ampoule-dropship-study` / INCI) |
+| **Local query CLI** | [`./SKILL/scripts/query_local.py`](./SKILL/scripts/query_local.py) | `summary` / `filter` / `compare` / `cite` |
+| **MCP stdio server** | [`./MCP/server.py`](./MCP/server.py) | Local FastMCP tools aligned with the remote Registry |
+| **Remote MCP config** | [`./MCP/remote_mcp_config.json`](./MCP/remote_mcp_config.json) | Official endpoint `https://mcp.riman.win/mcp` |
+| **MCP docs** | [`./MCP/README.md`](./MCP/README.md) | Local + remote + mcp-proxy bridge |
 
 ### Local quick start
 
 ```bash
-# Skill-side CLI (from this repository root)
 python SKILL/scripts/query_local.py summary
-python SKILL/scripts/query_local.py filter --column skin_type --contains Dry
-
-# MCP stdio (Cursor / Claude Desktop / any MCP host)
-pip install mcp
-python MCP/server.py
+python SKILL/scripts/query_local.py filter --column skin_type --contains Dry --lang en
+python SKILL/scripts/query_local.py cite
+pip install mcp && python MCP/server.py
 ```
 
-### Remote R2 MCP (Cloudflare Worker)
+### Remote Registry MCP (official)
 
-- Config template: `MCP/remote_mcp_config.json` (`repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study`, `r2_prefix=repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/`)
-- Worker endpoint (override with your deployment): `https://riman-ingestor.rimanwin.workers.dev/mcp`
-- List mirror: `GET /api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study`
-- Thematic hub: https://www.riman.win/www/en/reports/hub/growth.html
+- Endpoint: `https://mcp.riman.win/mcp`
+- Repo index: `https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study`
+- CDN package: `https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/`
+- Portal hub: https://www.riman.win/www/en/reports/hub/growth.html
+
+```bash
+npx -y mcp-proxy https://mcp.riman.win/mcp
+```
+
+```json
+{
+  "mcpServers": {
+    "riman-cl-lifening-beauty-collagen-ampoule-dropship-study": {
+      "url": "https://mcp.riman.win/mcp",
+      "transport": "http",
+      "headers": {},
+      "repo_name": "riman-cl-lifening-beauty-collagen-ampoule-dropship-study",
+      "notes": "Official RIMAN Registry MCP. Pass repo_name=riman-{slug} on tool calls. List: https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study"
+    }
+  }
+}
+```
 
 ---
 
