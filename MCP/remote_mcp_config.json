@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "riman-cl-lifening-beauty-collagen-ampoule-dropship-study": {
+      "url": "https://riman-ingestor.rimanwin.workers.dev/mcp",
+      "transport": "http",
+      "headers": {},
+      "repo_name": "riman-cl-lifening-beauty-collagen-ampoule-dropship-study",
+      "r2_prefix": "repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/",
+      "notes": "Cloudflare Worker MCP over RIMAN_R2 (transcend-riman). Override url after deploy."
+    }
+  }
+}

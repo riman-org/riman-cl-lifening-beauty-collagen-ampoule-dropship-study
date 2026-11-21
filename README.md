@@ -82,6 +82,39 @@ Contexte : L'introduction de nutraceuthiques oraux sur le marché latino-améric
 
 ---
 
+## Agent Skill Pack (`SKILL/`) & MCP Server (`MCP/`)
+
+This repository ships a portable **Agent Skill** and a **repo-scoped MCP server** so coding agents can query the local open-science package or the mirrored R2 prefix without inventing paths.
+
+| Entry | Path | Purpose |
+| :--- | :--- | :--- |
+| **Skill card** | [`./SKILL/SKILL.md`](./SKILL/SKILL.md) | YAML frontmatter + workflow for agents (trigger: RIMAN / `cl-lifening-beauty-collagen-ampoule-dropship-study` / descending INCI) |
+| **Local query CLI** | [`./SKILL/scripts/query_local.py`](./SKILL/scripts/query_local.py) | `summary` / `filter` against `*_report.json`, CSV, JSONL |
+| **MCP stdio server** | [`./MCP/server.py`](./MCP/server.py) | FastMCP tools: overview / CSV filter / corpus search |
+| **Remote MCP config** | [`./MCP/remote_mcp_config.json`](./MCP/remote_mcp_config.json) | Cloudflare Worker template (`repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/`) |
+| **MCP docs** | [`./MCP/README.md`](./MCP/README.md) | Local launch + Glama / PulseMCP listing notes |
+
+### Local quick start
+
+```bash
+# Skill-side CLI (from this repository root)
+python SKILL/scripts/query_local.py summary
+python SKILL/scripts/query_local.py filter --column skin_type --contains Dry
+
+# MCP stdio (Cursor / Claude Desktop / any MCP host)
+pip install mcp
+python MCP/server.py
+```
+
+### Remote R2 MCP (Cloudflare Worker)
+
+- Config template: `MCP/remote_mcp_config.json` (`repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study`, `r2_prefix=repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/`)
+- Worker endpoint (override with your deployment): `https://riman-ingestor.rimanwin.workers.dev/mcp`
+- List mirror: `GET /api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study`
+- Thematic hub: https://www.riman.win/www/en/reports/hub/growth.html
+
+---
+
 ## Citation & Official Provenance
 ```bibtex
 @article{riman_cl_lifening_beauty_collagen_ampoule_dropship_study_2026,
