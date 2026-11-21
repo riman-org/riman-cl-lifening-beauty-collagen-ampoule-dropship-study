@@ -58,7 +58,6 @@ def _overview(doc: dict, root: Path, repo_name: str) -> dict:
         "title_en": en.get("title"),
         "abstract_en": (en.get("abstract") or "")[:1200],
         "country": meta.get("country_name"),
-        "country_code": meta.get("country_code"),
         "product_id": meta.get("product_id"),
         "sample_size": stats.get("sample_size"),
         "overall_mean": stats.get("overall_composite_mean"),
@@ -67,7 +66,6 @@ def _overview(doc: dict, root: Path, repo_name: str) -> dict:
         "portal_hub": f"{SITE}/www/en/reports/hub/{theme_id}.html",
         "mcp": MCP_REMOTE,
         "dois": {"kaggle": KAGGLE_DOI, "huggingface": HF_DOI},
-        "readme_exists": (root / "README.md").exists(),
     }
 
 
@@ -80,7 +78,7 @@ def _num(v) -> float:
 
 @mcp.tool()
 def list_repos(theme_id: str = "", keyword: str = "", limit: int = 50) -> str:
-    """List sibling riman-* packages (local registry view). Optional theme/keyword filter."""
+    """List sibling riman-* packages. Optional theme/keyword filter."""
     parent = REPO_ROOT.parent
     theme_l = (theme_id or "").strip().lower()
     kw = (keyword or "").strip().lower()
@@ -113,14 +111,13 @@ def list_repos(theme_id: str = "", keyword: str = "", limit: int = 50) -> str:
 
 @mcp.tool()
 def get_repo_overview() -> str:
-    """Structured overview: titles, metrics, portal links, dual benchmark DOIs."""
-    doc = _load_report()
-    return json.dumps(_overview(doc, REPO_ROOT, REPO_NAME), ensure_ascii=False, indent=2)
+    """Structured overview + dual DOIs."""
+    return json.dumps(_overview(_load_report(), REPO_ROOT, REPO_NAME), ensure_ascii=False, indent=2)
 
 
 @mcp.tool()
 def query_quantitative_csv(column: str = "", contains: str = "", limit: int = 20) -> str:
-    """Filter *_quantitative.csv by column substring (case-insensitive)."""
+    """Filter *_quantitative.csv."""
     path = _find_one(REPO_ROOT, "*_quantitative.csv")
     if not path:
         return json.dumps({"error": "csv_not_found"})
@@ -141,15 +138,12 @@ def query_quantitative_csv(column: str = "", contains: str = "", limit: int = 20
             rows.append(row)
             if len(rows) >= max(1, int(limit)):
                 break
-    return json.dumps(
-        {"file": path.name, "columns": fields, "n": len(rows), "rows": rows},
-        ensure_ascii=False,
-    )
+    return json.dumps({"file": path.name, "columns": fields, "n": len(rows), "rows": rows}, ensure_ascii=False)
 
 
 @mcp.tool()
 def search_multilingual_corpus(query: str = "", language: str = "", limit: int = 10) -> str:
-    """Search *_multilingual_corpus.jsonl by substring and optional language (en, zh-TW, ...)."""
+    """Search multilingual JSONL."""
     path = _find_one(REPO_ROOT, "*_multilingual_corpus.jsonl")
     if not path:
         return json.dumps({"error": "jsonl_not_found"})
@@ -175,14 +169,13 @@ def search_multilingual_corpus(query: str = "", language: str = "", limit: int =
 
 @mcp.tool()
 def compare_repos(other_repo_name: str) -> str:
-    """Compare this package metrics with a sibling riman-{slug} folder."""
+    """Compare metrics with sibling riman-{slug}."""
     other = (other_repo_name or "").strip()
     other_root = REPO_ROOT.parent / other
     if not other_root.is_dir():
         return json.dumps({"error": "other_not_found", "other_repo_name": other})
     a = _overview(_load_report(REPO_ROOT), REPO_ROOT, REPO_NAME)
-    b_doc = _load_report(other_root)
-    b = _overview(b_doc, other_root, other)
+    b = _overview(_load_report(other_root), other_root, other)
     return json.dumps({
         "left": a,
         "right": b,
@@ -197,20 +190,17 @@ def compare_repos(other_repo_name: str) -> str:
 
 @mcp.tool()
 def list_repo_files() -> str:
-    """List package files under this repository root (excluding .git)."""
+    """List package files (excluding .git)."""
     files = []
     for p in sorted(REPO_ROOT.rglob("*")):
-        if not p.is_file():
-            continue
-        if ".git" in p.parts:
-            continue
-        files.append(p.relative_to(REPO_ROOT).as_posix())
+        if p.is_file() and ".git" not in p.parts:
+            files.append(p.relative_to(REPO_ROOT).as_posix())
     return json.dumps({"repo_name": REPO_NAME, "n": len(files), "files": files}, ensure_ascii=False)
 
 
 @mcp.tool()
 def get_citation() -> str:
-    """BibTeX citation plus dual benchmark DOIs and portal URL."""
+    """BibTeX + dual DOIs."""
     doc = _load_report()
     slug = doc.get("slug") or SLUG
     en = (doc.get("locales") or {}).get("en") or {}
@@ -237,13 +227,11 @@ def get_citation() -> str:
 
 @mcp.resource("repo://riman-cl-lifening-beauty-collagen-ampoule-dropship-study/report")
 def report_resource() -> str:
-    """Full *_report.json document."""
     return json.dumps(_load_report(), ensure_ascii=False)
 
 
 @mcp.resource("repo://riman-cl-lifening-beauty-collagen-ampoule-dropship-study/citation")
 def citation_resource() -> str:
-    """Citation + dual DOI resource."""
     return get_citation()
 
 

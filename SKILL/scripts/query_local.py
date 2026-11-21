@@ -36,9 +36,8 @@ def _overview(doc: dict, root: Path) -> dict:
     meta = doc.get("metadata") or {}
     stats = doc.get("quantitative_metrics") or {}
     en = (doc.get("locales") or {}).get("en") or {}
-    repo_name = f"riman-{slug}"
     return {
-        "repo_name": repo_name,
+        "repo_name": f"riman-{slug}",
         "repo_root": str(root),
         "slug": slug,
         "theme_id": theme_id,
@@ -59,8 +58,7 @@ def _overview(doc: dict, root: Path) -> dict:
 
 
 def cmd_summary(_: argparse.Namespace) -> int:
-    ov = _overview(_load_report(), REPO_ROOT)
-    print(json.dumps(ov, ensure_ascii=False, indent=2))
+    print(json.dumps(_overview(_load_report(), REPO_ROOT), ensure_ascii=False, indent=2))
     return 0
 
 
@@ -70,7 +68,6 @@ def cmd_filter(args: argparse.Namespace) -> int:
     lang = (args.lang or "").strip()
     limit = max(1, int(args.limit or 20))
     shown = 0
-
     csv_path = _find_one(REPO_ROOT, "*_quantitative.csv")
     if csv_path:
         with csv_path.open("r", encoding="utf-8-sig", newline="") as f:
@@ -91,7 +88,6 @@ def cmd_filter(args: argparse.Namespace) -> int:
                     shown += 1
                     if shown >= limit:
                         break
-
     jsonl = _find_one(REPO_ROOT, "*_multilingual_corpus.jsonl")
     if jsonl:
         print(f"## JSONL hits from {jsonl.name}")
@@ -114,34 +110,8 @@ def cmd_filter(args: argparse.Namespace) -> int:
             if n >= limit:
                 break
         shown += n
-
     if shown == 0:
         print("[info] no rows matched")
-    return 0
-
-
-def cmd_compare(args: argparse.Namespace) -> int:
-    other_name = (args.other or "").strip()
-    if not other_name:
-        print("[error] --other required (sibling folder name riman-...)", file=sys.stderr)
-        return 2
-    other_root = REPO_ROOT.parent / other_name
-    if not other_root.is_dir():
-        print(f"[error] sibling not found: {other_root}", file=sys.stderr)
-        return 1
-    a = _overview(_load_report(REPO_ROOT), REPO_ROOT)
-    b = _overview(_load_report(other_root), other_root)
-    payload = {
-        "left": a,
-        "right": b,
-        "delta": {
-            "overall_mean": _num(a.get("overall_mean")) - _num(b.get("overall_mean")),
-            "top2_box_pct": _num(a.get("top2_box_pct")) - _num(b.get("top2_box_pct")),
-            "sample_size": _num(a.get("sample_size")) - _num(b.get("sample_size")),
-        },
-        "mcp": MCP,
-    }
-    print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0
 
 
@@ -150,6 +120,27 @@ def _num(v) -> float:
         return float(v)
     except (TypeError, ValueError):
         return 0.0
+
+
+def cmd_compare(args: argparse.Namespace) -> int:
+    other_name = (args.other or "").strip()
+    other_root = REPO_ROOT.parent / other_name
+    if not other_root.is_dir():
+        print(f"[error] sibling not found: {other_root}", file=sys.stderr)
+        return 1
+    a = _overview(_load_report(REPO_ROOT), REPO_ROOT)
+    b = _overview(_load_report(other_root), other_root)
+    print(json.dumps({
+        "left": a,
+        "right": b,
+        "delta": {
+            "overall_mean": _num(a.get("overall_mean")) - _num(b.get("overall_mean")),
+            "top2_box_pct": _num(a.get("top2_box_pct")) - _num(b.get("top2_box_pct")),
+            "sample_size": _num(a.get("sample_size")) - _num(b.get("sample_size")),
+        },
+        "mcp": MCP,
+    }, ensure_ascii=False, indent=2))
+    return 0
 
 
 def cmd_cite(_: argparse.Namespace) -> int:
@@ -179,19 +170,17 @@ def cmd_cite(_: argparse.Namespace) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Query local RIMAN package (MCP-aligned)")
     sub = parser.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("summary", help="Structured overview + dual DOIs")
-    p.set_defaults(func=cmd_summary)
-    p = sub.add_parser("filter", help="Filter CSV / multilingual JSONL")
+    p = sub.add_parser("summary"); p.set_defaults(func=cmd_summary)
+    p = sub.add_parser("filter")
     p.add_argument("--column", default="")
     p.add_argument("--contains", default="")
-    p.add_argument("--lang", default="", help="JSONL language filter (en, zh-TW, ...)")
+    p.add_argument("--lang", default="")
     p.add_argument("--limit", type=int, default=20)
     p.set_defaults(func=cmd_filter)
-    p = sub.add_parser("compare", help="Compare metrics with sibling riman-* repo")
+    p = sub.add_parser("compare")
     p.add_argument("--other", required=True)
     p.set_defaults(func=cmd_compare)
-    p = sub.add_parser("cite", help="BibTeX + dual benchmark DOIs")
-    p.set_defaults(func=cmd_cite)
+    p = sub.add_parser("cite"); p.set_defaults(func=cmd_cite)
     args = parser.parse_args()
     return int(args.func(args) or 0)
 

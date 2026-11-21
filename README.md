@@ -84,31 +84,24 @@ Contexte : L'introduction de nutraceuthiques oraux sur le marché latino-améric
 
 ## Agent Skill Pack (`SKILL/`) & MCP Registry (`MCP/`)
 
-This repository ships a portable **Agent Skill** and a **repo-scoped MCP server**, plus a remote Registry MCP for cloud agents.
+**Theme:** B2B Growth & Drop-Shipping / B2B增长与一件代发 · **Market:** Chile · **SKU:** LIFENING Beauty Collagen Ampoule Drink
 
 | Entry | Path | Purpose |
 | :--- | :--- | :--- |
-| **Skill card** | [`./SKILL/SKILL.md`](./SKILL/SKILL.md) | YAML frontmatter + 6-lang workflow (trigger: RIMAN / `cl-lifening-beauty-collagen-ampoule-dropship-study` / INCI) |
-| **Local query CLI** | [`./SKILL/scripts/query_local.py`](./SKILL/scripts/query_local.py) | `summary` / `filter` / `compare` / `cite` |
-| **MCP stdio server** | [`./MCP/server.py`](./MCP/server.py) | Local FastMCP tools aligned with the remote Registry |
-| **Remote MCP config** | [`./MCP/remote_mcp_config.json`](./MCP/remote_mcp_config.json) | Official endpoint `https://mcp.riman.win/mcp` |
-| **MCP docs** | [`./MCP/README.md`](./MCP/README.md) | Local + remote + mcp-proxy bridge |
+| **Skill card** | [`./SKILL/SKILL.md`](./SKILL/SKILL.md) | Agent trigger card for `cl-lifening-beauty-collagen-ampoule-dropship-study` |
+| **ModelScope Skill ZIP** | [`./SKILL/modelscope_skill.zip`](./SKILL/modelscope_skill.zip) | Single-file upload (`SKILL.md` only at zip root) |
+| **Local CLI** | [`./SKILL/scripts/query_local.py`](./SKILL/scripts/query_local.py) | `summary` / `filter` / `compare` / `cite` |
+| **MCP stdio** | [`./MCP/server.py`](./MCP/server.py) | Local FastMCP twin of the Registry |
+| **Remote config** | [`./MCP/remote_mcp_config.json`](./MCP/remote_mcp_config.json) | `https://mcp.riman.win/mcp` · server `riman-cl-lifening-beauty-collagen-ampoule-dropship-study-mcp` |
+| **Listing checklist** | [`./MCP/GLAMA_AND_MODELSCOPE_LISTING.md`](./MCP/GLAMA_AND_MODELSCOPE_LISTING.md) | Glama + ModelScope MCP + Skills field guide |
+| **MCP docs** | [`./MCP/README.md`](./MCP/README.md) | Local / remote / directory listing notes |
 
-### Local quick start
-
-```bash
-python SKILL/scripts/query_local.py summary
-python SKILL/scripts/query_local.py filter --column skin_type --contains Dry --lang en
-python SKILL/scripts/query_local.py cite
-pip install mcp && python MCP/server.py
-```
-
-### Remote Registry MCP (official)
+### Remote Registry MCP
 
 - Endpoint: `https://mcp.riman.win/mcp`
 - Repo index: `https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study`
-- CDN package: `https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/`
-- Portal hub: https://www.riman.win/www/en/reports/hub/growth.html
+- CDN: `https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/`
+- Report: [https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html](https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html)
 
 ```bash
 npx -y mcp-proxy https://mcp.riman.win/mcp
@@ -117,16 +110,22 @@ npx -y mcp-proxy https://mcp.riman.win/mcp
 ```json
 {
   "mcpServers": {
-    "riman-cl-lifening-beauty-collagen-ampoule-dropship-study": {
+    "riman-cl-lifening-beauty-collagen-ampoule-dropship-study-mcp": {
       "url": "https://mcp.riman.win/mcp",
       "transport": "http",
       "headers": {},
       "repo_name": "riman-cl-lifening-beauty-collagen-ampoule-dropship-study",
-      "notes": "Official RIMAN Registry MCP. Pass repo_name=riman-{slug} on tool calls. List: https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study"
+      "notes": "Glama / ModelScope hosted endpoint. Pass repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study on tool calls. Index: https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study"
     }
   }
 }
 ```
+
+### Directory listing
+
+- **Glama:** https://glama.ai/mcp/servers (Hosted endpoint)
+- **ModelScope MCP:** https://modelscope.ai/mcp
+- **ModelScope Skills:** https://modelscope.ai/skills
 
 ---
 

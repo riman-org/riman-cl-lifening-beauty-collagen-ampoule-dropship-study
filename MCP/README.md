@@ -1,50 +1,41 @@
 # MCP — `riman-cl-lifening-beauty-collagen-ampoule-dropship-study`
 
-Model Context Protocol pack for this RIMAN open-science repository (local stdio + official remote Registry).
+## Theme overview
+
+**EN:** RIMAN open-science MCP for LIFENING Beauty Collagen Ampoule Drink in Chile (B2B Growth & Drop-Shipping). Query n=200 survey CSV, 6-language corpus, and dual DOIs via https://mcp.riman.win/mcp. Mean=3.29/5, Top-2-Box=41.4%.
+
+**ZH:** 力曼 RIMAN 开源 MCP：Chile市场 LIFENING Beauty Collagen Ampoule Drink（B2B增长与一件代发）。通过 https://mcp.riman.win/mcp 检索 n=200 定量 CSV、六语语料与双基准 DOI。综合均分 3.29/5，Top-2-Box 41.4%。
+
+Interactive report: [https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html](https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html)
 
 ## Official remote endpoint
-- **MCP:** [https://mcp.riman.win/mcp](https://mcp.riman.win/mcp)
+- **MCP (only):** [https://mcp.riman.win/mcp](https://mcp.riman.win/mcp)
 - **Repo index:** [https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study](https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study)
-- **CDN package:** [https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/](https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/)
-- **Portal:** [https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html](https://www.riman.win/www/en/reports/detail/cl-lifening-beauty-collagen-ampoule-dropship-study.html)
+- **CDN:** [https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/](https://cdn.riman.win/repos/riman-cl-lifening-beauty-collagen-ampoule-dropship-study/)
+- **GitHub:** [https://github.com/riman-org/riman-cl-lifening-beauty-collagen-ampoule-dropship-study](https://github.com/riman-org/riman-cl-lifening-beauty-collagen-ampoule-dropship-study)
 
 ## Tools
-| Tool | Description |
-| :--- | :--- |
-| `list_repos` | List packages (theme / keyword filters) |
-| `get_repo_overview` | Titles, metrics, portal links, dual DOIs |
-| `query_quantitative_csv` | Filter `*_quantitative.csv` |
-| `search_multilingual_corpus` | Search JSONL by query + language |
-| `compare_repos` | Compare metrics with another `riman-{slug}` |
-| `list_repo_files` | List package files |
-| `get_citation` | BibTeX + dual benchmark DOIs |
+| `list_repos` | Registry tool |
+| `get_repo_overview` | Registry tool |
+| `query_quantitative_csv` | Registry tool |
+| `search_multilingual_corpus` | Registry tool |
+| `compare_repos` | Registry tool |
+| `list_repo_files` | Registry tool |
+| `get_citation` | Registry tool |
 
 ## Resources
 | URI | Description |
 | :--- | :--- |
 | `repo://riman-cl-lifening-beauty-collagen-ampoule-dropship-study/report` | Full `*_report.json` |
-| `repo://riman-cl-lifening-beauty-collagen-ampoule-dropship-study/citation` | BibTeX + DOI block |
+| `repo://riman-cl-lifening-beauty-collagen-ampoule-dropship-study/citation` | BibTeX + dual DOIs |
 
 ## Local stdio
 ```bash
-cd /path/to/riman-cl-lifening-beauty-collagen-ampoule-dropship-study
 pip install mcp
 python MCP/server.py
 ```
 
-```json
-{
-  "mcpServers": {
-    "riman-cl-lifening-beauty-collagen-ampoule-dropship-study": {
-      "command": "python",
-      "args": ["MCP/server.py"],
-      "cwd": "/absolute/path/to/riman-cl-lifening-beauty-collagen-ampoule-dropship-study"
-    }
-  }
-}
-```
-
-## Remote client (HTTP) + proxy bridge
+## Remote client + bridge
 ```bash
 npx -y mcp-proxy https://mcp.riman.win/mcp
 ```
@@ -52,18 +43,25 @@ npx -y mcp-proxy https://mcp.riman.win/mcp
 ```json
 {
   "mcpServers": {
-    "riman-cl-lifening-beauty-collagen-ampoule-dropship-study": {
+    "riman-cl-lifening-beauty-collagen-ampoule-dropship-study-mcp": {
       "url": "https://mcp.riman.win/mcp",
       "transport": "http",
       "headers": {},
       "repo_name": "riman-cl-lifening-beauty-collagen-ampoule-dropship-study",
-      "notes": "Official RIMAN Registry MCP. Pass repo_name=riman-{slug} on tool calls. List: https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study"
+      "notes": "Glama / ModelScope hosted endpoint. Pass repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study on tool calls. Index: https://mcp.riman.win/api/mcp/repos?repo_name=riman-cl-lifening-beauty-collagen-ampoule-dropship-study"
     }
   }
 }
 ```
 
-Suitable for Glama / PulseMCP as a **dataset-scoped read-only Registry MCP**.
+## Directory listing (Glama / ModelScope)
+Use the field-by-field checklist:
+
+→ [`GLAMA_AND_MODELSCOPE_LISTING.md`](./GLAMA_AND_MODELSCOPE_LISTING.md)
+
+- Glama: https://glama.ai/mcp/servers
+- ModelScope MCP: https://modelscope.ai/mcp
+- ModelScope Skills: https://modelscope.ai/skills (upload `../SKILL/modelscope_skill.zip`)
 
 ## Provenance
 - Kaggle DOI: [10.34740/kaggle/dsv/22383536](https://doi.org/10.34740/kaggle/dsv/22383536)
